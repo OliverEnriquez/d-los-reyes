@@ -153,7 +153,7 @@
           <%- about.paragraph2 %>
         </div>
         <div class="flex flex-wrap gap-6 md:gap-8">
-          <% about.benefits.forEach(function(benefit) { %>
+          <% (about.benefits || []).forEach(function(benefit) { %>
             <div>
               <div class="w-12 h-12 bg-black rounded-full flex items-center justify-center mb-3">
                 <% if (benefit.icon === 'check') { %>
@@ -431,7 +431,7 @@
               <label class="block text-xs tracking-widest uppercase text-black/40 mb-2">Tipo de proyecto</label>
               <select name="project_type" class="w-full border-b-2 border-gray-200 py-3 focus:border-black outline-none transition bg-transparent text-sm text-gray-500">
                 <option value="">Selecciona una opcion</option>
-                <% contact.form_options.forEach(function(option) { %>
+                <% (contact.form_options || []).forEach(function(option) { %>
                   <option><%= option %></option>
                 <% }); %>
               </select>
