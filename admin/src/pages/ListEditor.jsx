@@ -9,6 +9,7 @@ export default function ListEditor({ table, title, fields }) {
   const [loading, setLoading] = useState(true);
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [savingId, setSavingId] = useState(null);
+  const [savingAll, setSavingAll] = useState(false);
 
   const load = async () => {
     const { data } = await api.get(`/${table}`);
@@ -57,6 +58,19 @@ export default function ListEditor({ table, title, fields }) {
     setSavingId(null);
   };
 
+  const handleSaveAll = async () => {
+    setSavingAll(true);
+    try {
+      for (const item of items) {
+        await api.put(`/${table}/${item.id}`, item);
+      }
+      toast.success('Todo guardado. Sitio actualizado.');
+    } catch {
+      toast.error('Error al guardar');
+    }
+    setSavingAll(false);
+  };
+
   const handleDelete = async (id) => {
     try {
       await api.delete(`/${table}/${id}`);
@@ -74,6 +88,10 @@ export default function ListEditor({ table, title, fields }) {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">{title}</h1>
+        <button onClick={handleSaveAll} disabled={savingAll || items.length === 0}
+          className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800 disabled:opacity-50">
+          {savingAll ? 'Guardando todo...' : 'Guardar Todo'}
+        </button>
       </div>
       <button onClick={handleAdd}
         className="fixed bottom-6 right-6 z-40 bg-black text-white px-5 py-3 rounded-full shadow-lg hover:bg-gray-800 transition flex items-center gap-2 text-sm font-medium">
