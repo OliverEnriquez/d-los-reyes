@@ -66,6 +66,22 @@
       "copyright": "2026 D' Los Reyes Carpintería & Diseño. Todos los derechos reservados.",
       "tagline": "Diseñado con pasión por la madera"
     },
+    "services_header": {
+      "section_label": "Nuestros servicios",
+      "headline": "Lo que hacemos"
+    },
+    "gallery_header": {
+      "section_label": "Nuestro trabajo",
+      "headline": "Galería de Proyectos"
+    },
+    "process_header": {
+      "section_label": "Cómo trabajamos",
+      "headline": "Nuestro Proceso"
+    },
+    "testimonials_header": {
+      "section_label": "Testimonios",
+      "headline": "Lo que dicen nuestros clientes"
+    },
     "settings": {
       "logo_text": "D' Los Reyes",
       "nav_items": [

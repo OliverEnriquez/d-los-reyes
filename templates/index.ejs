@@ -188,8 +188,8 @@
   <section id="servicios" class="py-24 bg-gray-50">
     <div class="max-w-7xl mx-auto px-6">
       <div class="text-center mb-16">
-        <p class="text-xs tracking-[0.3em] uppercase text-black/40 mb-4">Nuestros servicios</p>
-        <h2 class="font-heading text-3xl md:text-5xl font-bold">Lo que hacemos</h2>
+        <p class="text-xs tracking-[0.3em] uppercase text-black/40 mb-4"><%= services_header.section_label %></p>
+        <h2 class="font-heading text-3xl md:text-5xl font-bold"><%= services_header.headline %></h2>
       </div>
       <div class="grid md:grid-cols-3 gap-8">
         <% services.forEach(function(service) { %>
@@ -220,8 +220,8 @@
   <section id="galeria" class="py-24 bg-white">
     <div class="max-w-7xl mx-auto px-6">
       <div class="text-center mb-16">
-        <p class="text-xs tracking-[0.3em] uppercase text-black/40 mb-4">Nuestro trabajo</p>
-        <h2 class="font-heading text-3xl md:text-5xl font-bold">Galeria de Proyectos</h2>
+        <p class="text-xs tracking-[0.3em] uppercase text-black/40 mb-4"><%= gallery_header.section_label %></p>
+        <h2 class="font-heading text-3xl md:text-5xl font-bold"><%= gallery_header.headline %></h2>
       </div>
 
       <!-- Mobile: Carousel -->
@@ -293,8 +293,8 @@
   <section id="proceso" class="py-24 bg-black text-white">
     <div class="max-w-7xl mx-auto px-6">
       <div class="text-center mb-16">
-        <p class="text-xs tracking-[0.3em] uppercase text-white/40 mb-4">Como trabajamos</p>
-        <h2 class="font-heading text-3xl md:text-5xl font-bold">Nuestro Proceso</h2>
+        <p class="text-xs tracking-[0.3em] uppercase text-white/40 mb-4"><%= process_header.section_label %></p>
+        <h2 class="font-heading text-3xl md:text-5xl font-bold"><%= process_header.headline %></h2>
       </div>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
         <% process_steps.forEach(function(step) { %>
@@ -317,8 +317,8 @@
   <section class="py-24 bg-gray-50">
     <div class="max-w-7xl mx-auto px-6">
       <div class="text-center mb-16">
-        <p class="text-xs tracking-[0.3em] uppercase text-black/40 mb-4">Testimonios</p>
-        <h2 class="font-heading text-3xl md:text-5xl font-bold">Lo que dicen nuestros clientes</h2>
+        <p class="text-xs tracking-[0.3em] uppercase text-black/40 mb-4"><%= testimonials_header.section_label %></p>
+        <h2 class="font-heading text-3xl md:text-5xl font-bold"><%= testimonials_header.headline %></h2>
       </div>
       <div class="grid md:grid-cols-3 gap-8">
         <% testimonials.forEach(function(testimonial) { %>

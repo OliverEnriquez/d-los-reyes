@@ -105,11 +105,13 @@ function SortableItem({ item, index, total, fields, table, handleUpdate, handleS
   );
 }
 
-export default function ListEditor({ table, title, fields }) {
+export default function ListEditor({ table, title, fields, headerSection, headerFields }) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [savingId, setSavingId] = useState(null);
+  const [headerData, setHeaderData] = useState(null);
+  const [savingHeader, setSavingHeader] = useState(false);
   const itemsRef = useRef(items);
 
   useEffect(() => { itemsRef.current = items; }, [items]);
@@ -122,6 +124,10 @@ export default function ListEditor({ table, title, fields }) {
   const load = async () => {
     const { data } = await api.get(`/${table}`);
     setItems(data);
+    if (headerSection) {
+      const hRes = await api.get(`/content/${headerSection}`);
+      setHeaderData(hRes.data.data);
+    }
     setLoading(false);
   };
 
@@ -207,6 +213,17 @@ export default function ListEditor({ table, title, fields }) {
     }
   };
 
+  const handleSaveHeader = async () => {
+    setSavingHeader(true);
+    try {
+      await api.put(`/content/${headerSection}`, headerData);
+      toast.success('Título actualizado');
+    } catch {
+      toast.error('Error al guardar título');
+    }
+    setSavingHeader(false);
+  };
+
   if (loading) return <div className="text-gray-500">Cargando...</div>;
 
   return (
@@ -214,6 +231,25 @@ export default function ListEditor({ table, title, fields }) {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">{title}</h1>
       </div>
+      {headerData && headerFields && (
+        <div className="bg-white rounded-lg shadow-sm p-5 border border-gray-100 mb-6">
+          <p className="text-xs font-medium text-gray-400 mb-3 uppercase tracking-wider">Título de sección</p>
+          <div className="space-y-3">
+            {headerFields.map(f => (
+              <div key={f.key}>
+                <label className="block text-xs font-medium text-gray-500 mb-1">{f.label}</label>
+                <input type="text" value={headerData[f.key] || ''} placeholder={f.placeholder || ''}
+                  onChange={e => setHeaderData({ ...headerData, [f.key]: e.target.value })}
+                  className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black" />
+              </div>
+            ))}
+          </div>
+          <button onClick={handleSaveHeader} disabled={savingHeader}
+            className="mt-3 bg-black text-white px-4 py-1.5 rounded text-sm hover:bg-gray-800 disabled:opacity-50">
+            {savingHeader ? 'Guardando...' : 'Guardar título'}
+          </button>
+        </div>
+      )}
       <button onClick={handleAdd}
         className="fixed bottom-6 right-6 z-40 bg-black text-white w-12 h-12 rounded-full shadow-lg hover:bg-gray-800 transition flex items-center justify-center text-2xl font-bold">
         +

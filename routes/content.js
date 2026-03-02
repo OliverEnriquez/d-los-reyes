@@ -3,7 +3,7 @@ const db = require('../db/database');
 const auth = require('../middleware/auth');
 const { regenerate } = require('../services/regenerate');
 
-const VALID_SECTIONS = ['hero', 'about', 'cta', 'contact', 'footer', 'settings'];
+const VALID_SECTIONS = ['hero', 'about', 'cta', 'contact', 'footer', 'settings', 'services_header', 'gallery_header', 'process_header', 'testimonials_header'];
 
 router.get('/:section', (req, res) => {
   const { section } = req.params;

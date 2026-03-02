@@ -76,30 +76,50 @@ export default function App() {
             { key: 'number', label: 'Número', type: 'text', placeholder: 'Ej: 15+' },
             { key: 'label', label: 'Etiqueta', type: 'text', placeholder: 'Ej: Años de experiencia' },
           ]} />} />
-          <Route path="services" element={<ListEditor table="services" title="Servicios" fields={[
-            { key: 'title', label: 'Título', type: 'text' },
-            { key: 'description', label: 'Descripción', type: 'textarea' },
-            { key: 'icon', label: 'Icono', type: 'select', options: [
-              { value: 'home', label: 'Casa' },
-              { value: 'building', label: 'Edificio' },
-              { value: 'puzzle', label: 'Puzzle' },
-            ]},
+          <Route path="services" element={<ListEditor table="services" title="Servicios"
+            headerSection="services_header" headerFields={[
+              { key: 'section_label', label: 'Etiqueta' },
+              { key: 'headline', label: 'Título' },
+            ]}
+            fields={[
+              { key: 'title', label: 'Título', type: 'text' },
+              { key: 'description', label: 'Descripción', type: 'textarea' },
+              { key: 'icon', label: 'Icono', type: 'select', options: [
+                { value: 'home', label: 'Casa' },
+                { value: 'building', label: 'Edificio' },
+                { value: 'puzzle', label: 'Puzzle' },
+              ]},
           ]} />} />
-          <Route path="gallery" element={<ListEditor table="gallery" title="Galería" fields={[
-            { key: 'title', label: 'Título', type: 'text' },
-            { key: 'category', label: 'Categoría', type: 'text' },
-            { key: 'image', label: 'Imagen', type: 'image' },
+          <Route path="gallery" element={<ListEditor table="gallery" title="Galería"
+            headerSection="gallery_header" headerFields={[
+              { key: 'section_label', label: 'Etiqueta' },
+              { key: 'headline', label: 'Título' },
+            ]}
+            fields={[
+              { key: 'title', label: 'Título', type: 'text' },
+              { key: 'category', label: 'Categoría', type: 'text' },
+              { key: 'image', label: 'Imagen', type: 'image' },
           ]} />} />
-          <Route path="process" element={<ListEditor table="process" title="Proceso" fields={[
-            { key: 'step_number', label: 'Número', type: 'text', placeholder: 'Ej: 01' },
-            { key: 'title', label: 'Título', type: 'text' },
-            { key: 'description', label: 'Descripción', type: 'textarea' },
+          <Route path="process" element={<ListEditor table="process" title="Proceso"
+            headerSection="process_header" headerFields={[
+              { key: 'section_label', label: 'Etiqueta' },
+              { key: 'headline', label: 'Título' },
+            ]}
+            fields={[
+              { key: 'step_number', label: 'Número', type: 'text', placeholder: 'Ej: 01' },
+              { key: 'title', label: 'Título', type: 'text' },
+              { key: 'description', label: 'Descripción', type: 'textarea' },
           ]} />} />
-          <Route path="testimonials" element={<ListEditor table="testimonials" title="Testimonios" fields={[
-            { key: 'quote', label: 'Testimonio', type: 'textarea' },
-            { key: 'author', label: 'Autor', type: 'text' },
-            { key: 'context', label: 'Contexto', type: 'text', placeholder: 'Ej: Proyecto residencial' },
-            { key: 'rating', label: 'Estrellas (1-5)', type: 'number' },
+          <Route path="testimonials" element={<ListEditor table="testimonials" title="Testimonios"
+            headerSection="testimonials_header" headerFields={[
+              { key: 'section_label', label: 'Etiqueta' },
+              { key: 'headline', label: 'Título' },
+            ]}
+            fields={[
+              { key: 'quote', label: 'Testimonio', type: 'textarea' },
+              { key: 'author', label: 'Autor', type: 'text' },
+              { key: 'context', label: 'Contexto', type: 'text', placeholder: 'Ej: Proyecto residencial' },
+              { key: 'rating', label: 'Estrellas (1-5)', type: 'number' },
           ]} />} />
           <Route path="sections" element={<SectionsToggle />} />
           <Route path="messages" element={<MessagesList />} />
