@@ -14,7 +14,6 @@ const sections = [
   { to: '/footer', label: 'Footer', desc: 'Redes sociales, copyright' },
   { to: '/sections', label: 'Secciones', desc: 'Habilitar o deshabilitar secciones del sitio' },
   { to: '/settings', label: 'Configuración', desc: 'Logo y navegación' },
-  { to: '/messages', label: 'Mensajes', desc: 'Mensajes del formulario de contacto' },
 ];
 
 export default function Dashboard() {

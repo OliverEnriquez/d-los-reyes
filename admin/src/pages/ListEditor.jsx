@@ -3,6 +3,108 @@ import api from '../api';
 import toast from 'react-hot-toast';
 import ImageUploader from '../components/ImageUploader';
 import RichEditor from '../components/RichEditor';
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+
+function SortableItem({ item, index, total, fields, table, handleUpdate, handleSave, handleDelete, savingId, confirmDelete, setConfirmDelete }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: item.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 50 : 'auto',
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} id={`item-${item.id}`}
+      className={`bg-white rounded-lg shadow-sm p-5 border ${isDragging ? 'border-black shadow-lg' : 'border-gray-100'}`}>
+      {/* Drag handle */}
+      <div className="flex items-center justify-between mb-3 pb-3 border-b border-gray-100">
+        <span className="text-xs text-gray-400 font-medium">#{index + 1} de {total}</span>
+        <button {...attributes} {...listeners}
+          className="cursor-grab active:cursor-grabbing p-1.5 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition touch-none">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
+          </svg>
+        </button>
+      </div>
+      <div className="space-y-3">
+        {fields.map(field => (
+          <div key={field.key}>
+            <label className="block text-xs font-medium text-gray-500 mb-1">{field.label}</label>
+            {field.type === 'textarea' ? (
+              <RichEditor key={table + '-' + item.id + '-' + field.key} value={item[field.key] || ''} onChange={val => handleUpdate(item.id, field.key, val)} />
+            ) : field.type === 'image' ? (
+              <ImageUploader value={item[field.key]}
+                onChange={val => handleUpdate(item.id, field.key, val)} />
+            ) : field.type === 'select' ? (
+              <select value={item[field.key] || ''}
+                onChange={e => handleUpdate(item.id, field.key, e.target.value)}
+                className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black">
+                {field.options.map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+            ) : field.type === 'number' ? (
+              <input type="number" min="1" max="5" value={item[field.key] || 5}
+                onChange={e => handleUpdate(item.id, field.key, parseInt(e.target.value))}
+                className="w-24 border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black" />
+            ) : (
+              <input type="text" value={item[field.key] || ''} placeholder={field.placeholder || ''}
+                onChange={e => handleUpdate(item.id, field.key, e.target.value)}
+                className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black" />
+            )}
+          </div>
+        ))}
+      </div>
+      <div className="flex gap-2 mt-4 pt-3 border-t border-gray-100">
+        <button onClick={() => handleSave(item.id)} disabled={savingId === item.id}
+          className="bg-black text-white px-4 py-1.5 rounded text-sm hover:bg-gray-800 disabled:opacity-50">
+          {savingId === item.id ? 'Guardando...' : 'Guardar'}
+        </button>
+        {confirmDelete === item.id ? (
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-red-600">¿Eliminar?</span>
+            <button onClick={() => handleDelete(item.id)}
+              className="bg-red-600 text-white px-3 py-1.5 rounded text-sm hover:bg-red-700">
+              Sí, eliminar
+            </button>
+            <button onClick={() => setConfirmDelete(null)}
+              className="bg-gray-200 text-gray-700 px-3 py-1.5 rounded text-sm hover:bg-gray-300">
+              Cancelar
+            </button>
+          </div>
+        ) : (
+          <button onClick={() => setConfirmDelete(item.id)}
+            className="bg-red-50 text-red-600 px-4 py-1.5 rounded text-sm hover:bg-red-100">
+            Eliminar
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
 
 export default function ListEditor({ table, title, fields }) {
   const [items, setItems] = useState([]);
@@ -12,6 +114,11 @@ export default function ListEditor({ table, title, fields }) {
   const itemsRef = useRef(items);
 
   useEffect(() => { itemsRef.current = items; }, [items]);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } }),
+  );
 
   const load = async () => {
     const { data } = await api.get(`/${table}`);
@@ -82,19 +189,17 @@ export default function ListEditor({ table, title, fields }) {
     }
   };
 
-  const handleMove = async (index, direction) => {
-    const newIndex = index + direction;
-    if (newIndex < 0 || newIndex >= items.length) return;
-    const newItems = [...items];
-    const temp = newItems[index];
-    newItems[index] = newItems[newIndex];
-    newItems[newIndex] = temp;
-    // Update sort_order
-    const updated = newItems.map((item, i) => ({ ...item, sort_order: i }));
-    setItems(updated);
-    // Save order to backend
+  const handleDragEnd = async (event) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = items.findIndex(i => i.id === active.id);
+    const newIndex = items.findIndex(i => i.id === over.id);
+    const newItems = arrayMove(items, oldIndex, newIndex).map((item, i) => ({ ...item, sort_order: i }));
+    setItems(newItems);
+
     try {
-      for (const item of updated) {
+      for (const item of newItems) {
         await api.put(`/${table}/${item.id}`, item);
       }
       toast.success('Orden actualizado');
@@ -115,82 +220,31 @@ export default function ListEditor({ table, title, fields }) {
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
         Agregar
       </button>
-      <div className="space-y-4">
-        {items.map((item, index) => (
-          <div key={item.id} id={`item-${item.id}`} className="bg-white rounded-lg shadow-sm p-5 border border-gray-100">
-            {/* Reorder buttons */}
-            <div className="flex items-center justify-between mb-3 pb-3 border-b border-gray-100">
-              <span className="text-xs text-gray-400 font-medium">#{index + 1} de {items.length}</span>
-              <div className="flex gap-1">
-                <button onClick={() => handleMove(index, -1)} disabled={index === 0}
-                  className="w-8 h-8 flex items-center justify-center rounded border border-gray-200 text-gray-500 hover:bg-gray-100 disabled:opacity-30 disabled:hover:bg-transparent transition">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" /></svg>
-                </button>
-                <button onClick={() => handleMove(index, 1)} disabled={index === items.length - 1}
-                  className="w-8 h-8 flex items-center justify-center rounded border border-gray-200 text-gray-500 hover:bg-gray-100 disabled:opacity-30 disabled:hover:bg-transparent transition">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                </button>
-              </div>
-            </div>
-            <div className="space-y-3">
-              {fields.map(field => (
-                <div key={field.key}>
-                  <label className="block text-xs font-medium text-gray-500 mb-1">{field.label}</label>
-                  {field.type === 'textarea' ? (
-                    <RichEditor key={table + '-' + item.id + '-' + field.key} value={item[field.key] || ''} onChange={val => handleUpdate(item.id, field.key, val)} />
-                  ) : field.type === 'image' ? (
-                    <ImageUploader value={item[field.key]}
-                      onChange={val => handleUpdate(item.id, field.key, val)} />
-                  ) : field.type === 'select' ? (
-                    <select value={item[field.key] || ''}
-                      onChange={e => handleUpdate(item.id, field.key, e.target.value)}
-                      className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black">
-                      {field.options.map(opt => (
-                        <option key={opt.value} value={opt.value}>{opt.label}</option>
-                      ))}
-                    </select>
-                  ) : field.type === 'number' ? (
-                    <input type="number" min="1" max="5" value={item[field.key] || 5}
-                      onChange={e => handleUpdate(item.id, field.key, parseInt(e.target.value))}
-                      className="w-24 border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black" />
-                  ) : (
-                    <input type="text" value={item[field.key] || ''} placeholder={field.placeholder || ''}
-                      onChange={e => handleUpdate(item.id, field.key, e.target.value)}
-                      className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black" />
-                  )}
-                </div>
-              ))}
-            </div>
-            <div className="flex gap-2 mt-4 pt-3 border-t border-gray-100">
-              <button onClick={() => handleSave(item.id)} disabled={savingId === item.id}
-                className="bg-black text-white px-4 py-1.5 rounded text-sm hover:bg-gray-800 disabled:opacity-50">
-                {savingId === item.id ? 'Guardando...' : 'Guardar'}
-              </button>
-              {confirmDelete === item.id ? (
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-red-600">¿Eliminar?</span>
-                  <button onClick={() => handleDelete(item.id)}
-                    className="bg-red-600 text-white px-3 py-1.5 rounded text-sm hover:bg-red-700">
-                    Sí, eliminar
-                  </button>
-                  <button onClick={() => setConfirmDelete(null)}
-                    className="bg-gray-200 text-gray-700 px-3 py-1.5 rounded text-sm hover:bg-gray-300">
-                    Cancelar
-                  </button>
-                </div>
-              ) : (
-                <button onClick={() => setConfirmDelete(item.id)}
-                  className="bg-red-50 text-red-600 px-4 py-1.5 rounded text-sm hover:bg-red-100">
-                  Eliminar
-                </button>
-              )}
-            </div>
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={items.map(i => i.id)} strategy={verticalListSortingStrategy}>
+          <div className="space-y-4">
+            {items.map((item, index) => (
+              <SortableItem
+                key={item.id}
+                item={item}
+                index={index}
+                total={items.length}
+                fields={fields}
+                table={table}
+                handleUpdate={handleUpdate}
+                handleSave={handleSave}
+                handleDelete={handleDelete}
+                savingId={savingId}
+                confirmDelete={confirmDelete}
+                setConfirmDelete={setConfirmDelete}
+              />
+            ))}
+            {items.length === 0 && (
+              <p className="text-gray-400 text-center py-8">No hay elementos. Haz clic en "+ Agregar" para crear uno.</p>
+            )}
           </div>
-        ))}
-        {items.length === 0 && (
-          <p className="text-gray-400 text-center py-8">No hay elementos. Haz clic en "+ Agregar" para crear uno.</p>
-        )}
-      </div>
+        </SortableContext>
+      </DndContext>
     </div>
   );
 }

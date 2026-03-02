@@ -17,7 +17,6 @@ const links = [
   { to: '/footer', label: 'Footer' },
   { to: '/sections', label: 'Secciones' },
   { to: '/settings', label: 'Configuración' },
-  { to: '/messages', label: 'Mensajes' },
 ];
 
 export default function Layout() {
@@ -57,7 +56,7 @@ export default function Layout() {
         <div className="p-4 border-b border-white/10 flex items-center justify-between">
           <div className="flex items-center gap-3 min-w-0">
             {settings?.logo_image ? (
-              <img src={settings.logo_image} alt={settings.logo_text || 'Logo'} className="h-8 w-auto" />
+              <img src={settings.logo_image} alt={settings.logo_text || 'Logo'} className="h-12 w-auto" />
             ) : (
               <h2 className="font-bold text-lg truncate">{settings?.logo_text || 'Admin'}</h2>
             )}
