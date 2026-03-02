@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import api from '../api';
 import toast from 'react-hot-toast';
 import ImageUploader from '../components/ImageUploader';
@@ -10,6 +10,9 @@ export default function ListEditor({ table, title, fields }) {
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [savingId, setSavingId] = useState(null);
   const [savingAll, setSavingAll] = useState(false);
+  const itemsRef = useRef(items);
+
+  useEffect(() => { itemsRef.current = items; }, [items]);
 
   const load = async () => {
     const { data } = await api.get(`/${table}`);
@@ -28,7 +31,7 @@ export default function ListEditor({ table, title, fields }) {
     });
     try {
       const { data } = await api.post(`/${table}`, newItem);
-      setItems([...items, data]);
+      setItems(prev => [...prev, data]);
       toast.success('Elemento agregado');
       setTimeout(() => {
         const el = document.getElementById(`item-${data.id}`);
@@ -39,15 +42,13 @@ export default function ListEditor({ table, title, fields }) {
     }
   };
 
-  const handleUpdate = async (id, key, value) => {
-    const item = items.find(i => i.id === id);
-    if (!item) return;
-    const updated = { ...item, [key]: value };
-    setItems(items.map(i => i.id === id ? updated : i));
+  const handleUpdate = (id, key, value) => {
+    setItems(prev => prev.map(i => i.id === id ? { ...i, [key]: value } : i));
   };
 
   const handleSave = async (id) => {
-    const item = items.find(i => i.id === id);
+    const item = itemsRef.current.find(i => i.id === id);
+    if (!item) return;
     setSavingId(id);
     try {
       await api.put(`/${table}/${id}`, item);
@@ -61,7 +62,8 @@ export default function ListEditor({ table, title, fields }) {
   const handleSaveAll = async () => {
     setSavingAll(true);
     try {
-      for (const item of items) {
+      const current = itemsRef.current;
+      for (const item of current) {
         await api.put(`/${table}/${item.id}`, item);
       }
       toast.success('Todo guardado. Sitio actualizado.');
@@ -74,7 +76,7 @@ export default function ListEditor({ table, title, fields }) {
   const handleDelete = async (id) => {
     try {
       await api.delete(`/${table}/${id}`);
-      setItems(items.filter(i => i.id !== id));
+      setItems(prev => prev.filter(i => i.id !== id));
       setConfirmDelete(null);
       toast.success('Elemento eliminado');
     } catch {
