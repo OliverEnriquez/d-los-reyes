@@ -78,27 +78,26 @@ function SortableItem({ item, index, total, fields, table, handleUpdate, handleS
           </div>
         ))}
       </div>
-      <div className="flex gap-2 mt-4 pt-3 border-t border-gray-100">
+      <div className="flex flex-wrap gap-2 mt-4 pt-3 border-t border-gray-100">
         <button onClick={() => handleSave(item.id)} disabled={savingId === item.id}
           className="bg-black text-white px-4 py-1.5 rounded text-sm hover:bg-gray-800 disabled:opacity-50">
           {savingId === item.id ? 'Guardando...' : 'Guardar'}
         </button>
         {confirmDelete === item.id ? (
           <div className="flex items-center gap-2">
-            <span className="text-sm text-red-600">¿Eliminar?</span>
             <button onClick={() => handleDelete(item.id)}
               className="bg-red-600 text-white px-3 py-1.5 rounded text-sm hover:bg-red-700">
-              Sí, eliminar
+              Sí
             </button>
             <button onClick={() => setConfirmDelete(null)}
               className="bg-gray-200 text-gray-700 px-3 py-1.5 rounded text-sm hover:bg-gray-300">
-              Cancelar
+              No
             </button>
           </div>
         ) : (
           <button onClick={() => setConfirmDelete(item.id)}
-            className="bg-red-50 text-red-600 px-4 py-1.5 rounded text-sm hover:bg-red-100">
-            Eliminar
+            className="text-red-400 px-2 py-1.5 rounded text-sm hover:text-red-600 hover:bg-red-50">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
           </button>
         )}
       </div>
@@ -216,9 +215,8 @@ export default function ListEditor({ table, title, fields }) {
         <h1 className="text-2xl font-bold">{title}</h1>
       </div>
       <button onClick={handleAdd}
-        className="fixed bottom-6 right-6 z-40 bg-black text-white px-5 py-3 rounded-full shadow-lg hover:bg-gray-800 transition flex items-center gap-2 text-sm font-medium">
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
-        Agregar
+        className="fixed bottom-6 right-6 z-40 bg-black text-white w-12 h-12 rounded-full shadow-lg hover:bg-gray-800 transition flex items-center justify-center text-2xl font-bold">
+        +
       </button>
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={items.map(i => i.id)} strategy={verticalListSortingStrategy}>
