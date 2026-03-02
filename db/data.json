@@ -83,45 +83,17 @@
       "headline": "Lo que dicen nuestros clientes"
     },
     "settings": {
-      "logo_text": "D' Los Reyes",
-      "logo_image": "",
-      "show_stats": true,
-      "show_about": true,
-      "show_services": true,
-      "show_gallery": true,
-      "show_process": true,
-      "show_testimonials": true,
-      "show_cta": true,
-      "show_contact": true,
+      "logo_image": "/uploads/1772428720948-comedor.jpg",
+      "logo_text": "D'  Los Reyes",
       "nav_items": [
-        {
-          "label": "Inicio",
-          "href": "#inicio"
-        },
-        {
-          "label": "Nosotros",
-          "href": "#nosotros"
-        },
-        {
-          "label": "Servicios",
-          "href": "#servicios"
-        },
-        {
-          "label": "Galería",
-          "href": "#galeria"
-        },
-        {
-          "label": "Proceso",
-          "href": "#proceso"
-        },
-        {
-          "label": "Contacto",
-          "href": "#contacto"
-        }
+        { "label": "Inicio", "href": "#inicio" },
+        { "label": "Nosotros", "href": "#nosotros" },
+        { "label": "Servicios", "href": "#servicios" },
+        { "label": "Galería", "href": "#galeria" },
+        { "label": "Proceso", "href": "#proceso" },
+        { "label": "Contacto", "href": "#contacto" }
       ],
-      "notification_emails": [
-        "contactodlosreyes@gmail.com"
-      ]
+      "notification_emails": ["contactodlosreyes@gmail.com"]
     }
   },
   "stats": [
