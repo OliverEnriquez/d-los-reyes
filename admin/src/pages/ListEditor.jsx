@@ -1,0 +1,124 @@
+import { useState, useEffect } from 'react';
+import api from '../api';
+import toast from 'react-hot-toast';
+import ImageUploader from '../components/ImageUploader';
+import RichEditor from '../components/RichEditor';
+
+export default function ListEditor({ table, title, fields }) {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const load = async () => {
+    const { data } = await api.get(`/${table}`);
+    setItems(data);
+    setLoading(false);
+  };
+
+  useEffect(() => { load(); }, [table]);
+
+  const handleAdd = async () => {
+    const newItem = {};
+    fields.forEach(f => {
+      if (f.type === 'number') newItem[f.key] = 5;
+      else if (f.type === 'select') newItem[f.key] = f.options[0].value;
+      else newItem[f.key] = '';
+    });
+    try {
+      const { data } = await api.post(`/${table}`, newItem);
+      setItems([...items, data]);
+      toast.success('Elemento agregado');
+    } catch {
+      toast.error('Error al agregar');
+    }
+  };
+
+  const handleUpdate = async (id, key, value) => {
+    const item = items.find(i => i.id === id);
+    if (!item) return;
+    const updated = { ...item, [key]: value };
+    setItems(items.map(i => i.id === id ? updated : i));
+  };
+
+  const handleSave = async (id) => {
+    const item = items.find(i => i.id === id);
+    try {
+      await api.put(`/${table}/${id}`, item);
+      toast.success('Guardado');
+    } catch {
+      toast.error('Error al guardar');
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!confirm('¿Eliminar este elemento?')) return;
+    try {
+      await api.delete(`/${table}/${id}`);
+      setItems(items.filter(i => i.id !== id));
+      toast.success('Eliminado');
+    } catch {
+      toast.error('Error al eliminar');
+    }
+  };
+
+  if (loading) return <div className="text-gray-500">Cargando...</div>;
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold">{title}</h1>
+        <button onClick={handleAdd}
+          className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800">
+          + Agregar
+        </button>
+      </div>
+      <div className="space-y-4">
+        {items.map(item => (
+          <div key={item.id} className="bg-white rounded-lg shadow-sm p-5 border border-gray-100">
+            <div className="space-y-3">
+              {fields.map(field => (
+                <div key={field.key}>
+                  <label className="block text-xs font-medium text-gray-500 mb-1">{field.label}</label>
+                  {field.type === 'textarea' ? (
+                    <RichEditor value={item[field.key] || ''} onChange={val => handleUpdate(item.id, field.key, val)} />
+                  ) : field.type === 'image' ? (
+                    <ImageUploader value={item[field.key]}
+                      onChange={val => handleUpdate(item.id, field.key, val)} />
+                  ) : field.type === 'select' ? (
+                    <select value={item[field.key] || ''}
+                      onChange={e => handleUpdate(item.id, field.key, e.target.value)}
+                      className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black">
+                      {field.options.map(opt => (
+                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                      ))}
+                    </select>
+                  ) : field.type === 'number' ? (
+                    <input type="number" min="1" max="5" value={item[field.key] || 5}
+                      onChange={e => handleUpdate(item.id, field.key, parseInt(e.target.value))}
+                      className="w-24 border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black" />
+                  ) : (
+                    <input type="text" value={item[field.key] || ''} placeholder={field.placeholder || ''}
+                      onChange={e => handleUpdate(item.id, field.key, e.target.value)}
+                      className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black" />
+                  )}
+                </div>
+              ))}
+            </div>
+            <div className="flex gap-2 mt-4 pt-3 border-t border-gray-100">
+              <button onClick={() => handleSave(item.id)}
+                className="bg-black text-white px-4 py-1.5 rounded text-sm hover:bg-gray-800">
+                Guardar
+              </button>
+              <button onClick={() => handleDelete(item.id)}
+                className="bg-red-50 text-red-600 px-4 py-1.5 rounded text-sm hover:bg-red-100">
+                Eliminar
+              </button>
+            </div>
+          </div>
+        ))}
+        {items.length === 0 && (
+          <p className="text-gray-400 text-center py-8">No hay elementos. Haz clic en "+ Agregar" para crear uno.</p>
+        )}
+      </div>
+    </div>
+  );
+}
