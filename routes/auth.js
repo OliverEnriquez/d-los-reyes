@@ -2,8 +2,8 @@ const router = require('express').Router();
 const jwt = require('jsonwebtoken');
 
 const USERS = [
-  { username: 'arianyenriquez', password: 'leonardo2016!' },
-  { username: 'jesusreyes', password: 'leonardo2016!' },
+  { username: 'aenriquez', password: 'leonardo2016!' },
+  { username: 'jreyes', password: 'leonardo2016!' },
 ];
 
 router.post('/login', (req, res) => {

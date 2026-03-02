@@ -74,11 +74,12 @@ export default function ListEditor({ table, title, fields }) {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">{title}</h1>
-        <button onClick={handleAdd}
-          className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800">
-          + Agregar
-        </button>
       </div>
+      <button onClick={handleAdd}
+        className="fixed bottom-6 right-6 z-40 bg-black text-white px-5 py-3 rounded-full shadow-lg hover:bg-gray-800 transition flex items-center gap-2 text-sm font-medium">
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+        Agregar
+      </button>
       <div className="space-y-4">
         {items.map(item => (
           <div key={item.id} id={`item-${item.id}`} className="bg-white rounded-lg shadow-sm p-5 border border-gray-100">
