@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 
@@ -19,16 +20,19 @@ const formats = [
 ];
 
 export default function RichEditor({ value, onChange }) {
+  const lastValue = useRef(value);
+
   const handleChange = (html) => {
-    const cleaned = html.replace(/&nbsp;/g, ' ');
-    onChange(cleaned);
+    if (html === lastValue.current) return;
+    lastValue.current = html;
+    onChange(html);
   };
 
   return (
     <div className="rich-editor">
       <ReactQuill
         theme="snow"
-        value={value || ''}
+        defaultValue={value || ''}
         onChange={handleChange}
         modules={modules}
         formats={formats}

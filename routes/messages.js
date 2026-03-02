@@ -1,6 +1,45 @@
 const router = require('express').Router();
 const db = require('../db/database');
 const auth = require('../middleware/auth');
+const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST || 'smtp.gmail.com',
+  port: parseInt(process.env.SMTP_PORT || '587'),
+  secure: false,
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+});
+
+async function sendNotification(msg) {
+  const data = db.load();
+  const emails = data.content.settings.notification_emails || [];
+  if (!emails.length || !process.env.SMTP_USER) return;
+
+  const html = `
+    <h2>Nuevo mensaje de contacto - D los Reyes</h2>
+    <table style="border-collapse:collapse;width:100%;max-width:500px;">
+      <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Nombre</td><td style="padding:8px;border-bottom:1px solid #eee;">${msg.name}</td></tr>
+      <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Email</td><td style="padding:8px;border-bottom:1px solid #eee;">${msg.email}</td></tr>
+      <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Teléfono</td><td style="padding:8px;border-bottom:1px solid #eee;">${msg.phone || 'No proporcionado'}</td></tr>
+      <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Tipo de proyecto</td><td style="padding:8px;border-bottom:1px solid #eee;">${msg.project_type || 'No especificado'}</td></tr>
+      <tr><td style="padding:8px;font-weight:bold;">Mensaje</td><td style="padding:8px;">${msg.message}</td></tr>
+    </table>
+  `;
+
+  try {
+    await transporter.sendMail({
+      from: `"D los Reyes Web" <${process.env.SMTP_USER}>`,
+      to: emails.join(', '),
+      subject: `Nuevo mensaje de ${msg.name} - D los Reyes`,
+      html,
+    });
+  } catch (err) {
+    console.error('Error enviando email:', err.message);
+  }
+}
 
 // Public: submit contact form
 router.post('/contact', (req, res) => {
@@ -12,6 +51,9 @@ router.post('/contact', (req, res) => {
   const msg = { id, name, phone: phone || '', email, project_type: project_type || '', message, read: false, created_at: new Date().toISOString() };
   data.messages.push(msg);
   db.save(data);
+
+  sendNotification(msg);
+
   res.status(201).json({ success: true });
 });
 

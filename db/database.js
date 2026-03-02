@@ -58,6 +58,7 @@ function getDefaultData() {
       settings: {
         logo_text: 'D los Reyes',
         logo_image: '',
+        notification_emails: ['ariany.enri@gmail.com', 'odec12@gmail.com'],
         nav_items: [
           { label: 'Inicio', href: '#inicio' },
           { label: 'Nosotros', href: '#nosotros' },
