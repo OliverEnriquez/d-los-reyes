@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:images.unsplash.com)",
+      "Bash(curl:*)",
+      "Bash(cygpath:*)",
+      "WebSearch",
+      "WebFetch(domain:unsplash.com)",
+      "Bash(echo:*)"
+    ]
+  }
+}
