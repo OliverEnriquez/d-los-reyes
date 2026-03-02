@@ -14,6 +14,7 @@ const links = [
   { to: '/cta', label: 'CTA Banner' },
   { to: '/contact', label: 'Contacto' },
   { to: '/footer', label: 'Footer' },
+  { to: '/sections', label: 'Secciones' },
   { to: '/settings', label: 'Configuración' },
   { to: '/messages', label: 'Mensajes' },
 ];

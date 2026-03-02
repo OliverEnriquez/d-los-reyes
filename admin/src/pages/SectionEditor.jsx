@@ -39,7 +39,7 @@ export default function SectionEditor({ section, title, fields }) {
           <div key={field.key}>
             <label className="block text-sm font-medium text-gray-700 mb-1">{field.label}</label>
             {field.type === 'textarea' ? (
-              <RichEditor value={data[field.key] || ''} onChange={val => setData({ ...data, [field.key]: val })} />
+              <RichEditor key={section + '-' + field.key} value={data[field.key] || ''} onChange={val => setData({ ...data, [field.key]: val })} />
             ) : field.type === 'image' ? (
               <ImageUploader value={data[field.key]} onChange={val => setData({ ...data, [field.key]: val })} />
             ) : (

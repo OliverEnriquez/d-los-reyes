@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard';
 import SectionEditor from './pages/SectionEditor';
 import ListEditor from './pages/ListEditor';
 import MessagesList from './pages/MessagesList';
+import SectionsToggle from './pages/SectionsToggle';
 
 function PrivateRoute({ children }) {
   const token = localStorage.getItem('token');
@@ -100,6 +101,7 @@ export default function App() {
             { key: 'context', label: 'Contexto', type: 'text', placeholder: 'Ej: Proyecto residencial' },
             { key: 'rating', label: 'Estrellas (1-5)', type: 'number' },
           ]} />} />
+          <Route path="sections" element={<SectionsToggle />} />
           <Route path="messages" element={<MessagesList />} />
         </Route>
       </Routes>
