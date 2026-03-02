@@ -558,11 +558,38 @@
       observer.observe(el);
     });
 
+    // Toast notification
+    function showToast(message, success) {
+      const existing = document.getElementById('toast');
+      if (existing) existing.remove();
+      const toast = document.createElement('div');
+      toast.id = 'toast';
+      toast.className = 'fixed top-6 right-6 z-[100] px-6 py-4 rounded-lg shadow-2xl text-sm font-medium transition-all duration-500 transform translate-x-full opacity-0 flex items-center gap-3 ' + (success ? 'bg-black text-white' : 'bg-red-600 text-white');
+      toast.innerHTML = (success
+        ? '<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>'
+        : '<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>'
+      ) + '<span>' + message + '</span>';
+      document.body.appendChild(toast);
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-x-full', 'opacity-0');
+        toast.classList.add('translate-x-0', 'opacity-100');
+      });
+      setTimeout(() => {
+        toast.classList.remove('translate-x-0', 'opacity-100');
+        toast.classList.add('translate-x-full', 'opacity-0');
+        setTimeout(() => toast.remove(), 500);
+      }, 4000);
+    }
+
     // Contact form AJAX submission
     const contactForm = document.querySelector('form[action="/api/contact"]');
     if (contactForm) {
       contactForm.addEventListener('submit', async function(e) {
         e.preventDefault();
+        const btn = this.querySelector('button[type="submit"]');
+        const btnText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = 'Enviando...';
         const formData = new FormData(this);
         const data = Object.fromEntries(formData.entries());
         try {
@@ -572,14 +599,16 @@
             body: JSON.stringify(data)
           });
           if (res.ok) {
-            alert('Gracias por tu mensaje. Te contactaremos pronto.');
+            showToast('Gracias por tu mensaje. Te contactaremos pronto.', true);
             this.reset();
           } else {
-            alert('Hubo un error al enviar tu mensaje. Intenta de nuevo.');
+            showToast('Hubo un error al enviar tu mensaje. Intenta de nuevo.', false);
           }
         } catch (err) {
-          alert('Hubo un error al enviar tu mensaje. Intenta de nuevo.');
+          showToast('Hubo un error al enviar tu mensaje. Intenta de nuevo.', false);
         }
+        btn.disabled = false;
+        btn.textContent = btnText;
       });
     }
   </script>
