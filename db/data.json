@@ -1,7 +1,7 @@
 {
   "content": {
     "hero": {
-      "subtitle": "Carpintería & Diseño de Autor",
+      "subtitle": "Carpinter�a & Dise�o de Autor",
       "headline_line1": "Muebles con",
       "headline_line2": "carácter propio",
       "description": "<p>Creamos piezas únicas que transforman espacios. Diseño contemporáneo, materiales nobles y artesanía de excelencia.</p>",
@@ -86,14 +86,34 @@
       "logo_image": "/uploads/1772428720948-comedor.jpg",
       "logo_text": "D'  Los Reyes",
       "nav_items": [
-        { "label": "Inicio", "href": "#inicio" },
-        { "label": "Nosotros", "href": "#nosotros" },
-        { "label": "Servicios", "href": "#servicios" },
-        { "label": "Galería", "href": "#galeria" },
-        { "label": "Proceso", "href": "#proceso" },
-        { "label": "Contacto", "href": "#contacto" }
+        {
+          "label": "Inicio",
+          "href": "#inicio"
+        },
+        {
+          "label": "Nosotros",
+          "href": "#nosotros"
+        },
+        {
+          "label": "Servicios",
+          "href": "#servicios"
+        },
+        {
+          "label": "Galería",
+          "href": "#galeria"
+        },
+        {
+          "label": "Proceso",
+          "href": "#proceso"
+        },
+        {
+          "label": "Contacto",
+          "href": "#contacto"
+        }
       ],
-      "notification_emails": ["contactodlosreyes@gmail.com"]
+      "notification_emails": [
+        "contactodlosreyes@gmail.com"
+      ]
     }
   },
   "stats": [
@@ -187,27 +207,6 @@
       "title": "Comedor",
       "category": "Comedores",
       "image": "/uploads/1772428720948-comedor.jpg"
-    },
-    {
-      "id": 11,
-      "sort_order": 6,
-      "title": "test",
-      "category": "test",
-      "image": "/uploads/1772437583122-comedor.jpg"
-    },
-    {
-      "id": 12,
-      "sort_order": 7,
-      "title": "test",
-      "category": "test",
-      "image": "/uploads/1772438302627-comedor.jpg"
-    },
-    {
-      "id": 13,
-      "sort_order": 8,
-      "title": "test",
-      "category": "tes",
-      "image": "/uploads/1772438320927-comedor.jpg"
     }
   ],
   "process_steps": [
