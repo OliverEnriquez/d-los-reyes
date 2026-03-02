@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 
 const sections = [
+  { to: '/logo', label: 'Logo', desc: 'Imagen y texto del logo' },
   { to: '/hero', label: 'Hero / Inicio', desc: 'Imagen de fondo, título, descripción y botones' },
   { to: '/about', label: 'Nosotros', desc: 'Texto de la sección About e imagen' },
   { to: '/stats', label: 'Estadísticas', desc: 'Números destacados (años, proyectos, etc.)' },
@@ -11,6 +12,7 @@ const sections = [
   { to: '/cta', label: 'CTA Banner', desc: 'Llamado a la acción' },
   { to: '/contact', label: 'Contacto', desc: 'Dirección, teléfono, email, horario' },
   { to: '/footer', label: 'Footer', desc: 'Redes sociales, copyright' },
+  { to: '/sections', label: 'Secciones', desc: 'Habilitar o deshabilitar secciones del sitio' },
   { to: '/settings', label: 'Configuración', desc: 'Logo y navegación' },
   { to: '/messages', label: 'Mensajes', desc: 'Mensajes del formulario de contacto' },
 ];

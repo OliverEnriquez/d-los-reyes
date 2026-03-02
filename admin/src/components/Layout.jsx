@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
+import api from '../api';
 
 const links = [
   { to: '/', label: 'Dashboard' },
@@ -23,6 +24,11 @@ export default function Layout() {
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [settings, setSettings] = useState(null);
+
+  useEffect(() => {
+    api.get('/content/settings').then(res => setSettings(res.data.data)).catch(() => {});
+  }, []);
 
   const logout = () => {
     localStorage.removeItem('token');
@@ -49,9 +55,13 @@ export default function Layout() {
         md:relative md:translate-x-0 md:w-60
       `}>
         <div className="p-4 border-b border-white/10 flex items-center justify-between">
-          <div>
-            <h2 className="font-bold text-lg">D' Los Reyes</h2>
-            <p className="text-xs text-white/50">CMS Admin</p>
+          <div className="flex items-center gap-3 min-w-0">
+            {settings?.logo_image ? (
+              <img src={settings.logo_image} alt={settings.logo_text || 'Logo'} className="h-8 w-auto" />
+            ) : (
+              <h2 className="font-bold text-lg truncate">{settings?.logo_text || 'Admin'}</h2>
+            )}
+            <p className="text-xs text-white/50 shrink-0">CMS</p>
           </div>
           <button
             className="md:hidden text-white/60 hover:text-white"
