@@ -122,12 +122,16 @@ export default function ListEditor({ table, title, fields, headerSection, header
   );
 
   const load = async () => {
-    const { data } = await api.get(`/${table}`);
-    setItems(data);
-    if (headerSection) {
-      const hRes = await api.get(`/content/${headerSection}`);
-      setHeaderData(hRes.data.data);
-    }
+    try {
+      const { data } = await api.get(`/${table}`);
+      setItems(data);
+      if (headerSection) {
+        try {
+          const hRes = await api.get(`/content/${headerSection}`);
+          setHeaderData(hRes.data.data);
+        } catch { /* header section not yet in DB */ }
+      }
+    } catch { }
     setLoading(false);
   };
 
