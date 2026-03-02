@@ -5,7 +5,7 @@ import api from '../api';
 const links = [
   { to: '/', label: 'Dashboard' },
   { to: '/logo', label: 'Logo' },
-  { to: '/hero', label: 'Hero / Inicio' },
+  { to: '/hero', label: 'Inicio' },
   { to: '/about', label: 'Nosotros' },
   { to: '/stats', label: 'Estadísticas' },
   { to: '/services', label: 'Servicios' },

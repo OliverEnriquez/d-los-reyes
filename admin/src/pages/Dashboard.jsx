@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 const sections = [
   { to: '/logo', label: 'Logo', desc: 'Imagen y texto del logo' },
-  { to: '/hero', label: 'Hero / Inicio', desc: 'Imagen de fondo, título, descripción y botones' },
+  { to: '/hero', label: 'Inicio', desc: 'Imagen de fondo, título, descripción y botones' },
   { to: '/about', label: 'Nosotros', desc: 'Texto de la sección About e imagen' },
   { to: '/stats', label: 'Estadísticas', desc: 'Números destacados (años, proyectos, etc.)' },
   { to: '/services', label: 'Servicios', desc: 'Servicios que ofrece la carpintería' },

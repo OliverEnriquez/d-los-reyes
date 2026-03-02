@@ -21,7 +21,7 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<PrivateRoute><Layout /></PrivateRoute>}>
           <Route index element={<Dashboard />} />
-          <Route path="hero" element={<SectionEditor section="hero" title="Hero / Inicio" fields={[
+          <Route path="hero" element={<SectionEditor section="hero" title="Inicio" fields={[
             { key: 'subtitle', label: 'Subtítulo', type: 'text' },
             { key: 'headline_line1', label: 'Título línea 1', type: 'text' },
             { key: 'headline_line2', label: 'Título línea 2 (cursiva)', type: 'text' },
