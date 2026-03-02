@@ -16,7 +16,6 @@ const links = [
   { to: '/footer', label: 'Footer' },
   { to: '/settings', label: 'Configuración' },
   { to: '/messages', label: 'Mensajes' },
-  { to: '/emails', label: 'Correos Notificación' },
 ];
 
 export default function Layout() {

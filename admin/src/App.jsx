@@ -6,7 +6,6 @@ import Dashboard from './pages/Dashboard';
 import SectionEditor from './pages/SectionEditor';
 import ListEditor from './pages/ListEditor';
 import MessagesList from './pages/MessagesList';
-import EmailSettings from './pages/EmailSettings';
 
 function PrivateRoute({ children }) {
   const token = localStorage.getItem('token');
@@ -102,7 +101,6 @@ export default function App() {
             { key: 'rating', label: 'Estrellas (1-5)', type: 'number' },
           ]} />} />
           <Route path="messages" element={<MessagesList />} />
-          <Route path="emails" element={<EmailSettings />} />
         </Route>
       </Routes>
     </>

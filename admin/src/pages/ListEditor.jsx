@@ -7,6 +7,8 @@ import RichEditor from '../components/RichEditor';
 export default function ListEditor({ table, title, fields }) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [confirmDelete, setConfirmDelete] = useState(null);
+  const [savingId, setSavingId] = useState(null);
 
   const load = async () => {
     const { data } = await api.get(`/${table}`);
@@ -27,6 +29,10 @@ export default function ListEditor({ table, title, fields }) {
       const { data } = await api.post(`/${table}`, newItem);
       setItems([...items, data]);
       toast.success('Elemento agregado');
+      setTimeout(() => {
+        const el = document.getElementById(`item-${data.id}`);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
     } catch {
       toast.error('Error al agregar');
     }
@@ -41,20 +47,22 @@ export default function ListEditor({ table, title, fields }) {
 
   const handleSave = async (id) => {
     const item = items.find(i => i.id === id);
+    setSavingId(id);
     try {
       await api.put(`/${table}/${id}`, item);
-      toast.success('Guardado');
+      toast.success('Guardado. Sitio actualizado.');
     } catch {
       toast.error('Error al guardar');
     }
+    setSavingId(null);
   };
 
   const handleDelete = async (id) => {
-    if (!confirm('¿Eliminar este elemento?')) return;
     try {
       await api.delete(`/${table}/${id}`);
       setItems(items.filter(i => i.id !== id));
-      toast.success('Eliminado');
+      setConfirmDelete(null);
+      toast.success('Elemento eliminado');
     } catch {
       toast.error('Error al eliminar');
     }
@@ -73,7 +81,7 @@ export default function ListEditor({ table, title, fields }) {
       </div>
       <div className="space-y-4">
         {items.map(item => (
-          <div key={item.id} className="bg-white rounded-lg shadow-sm p-5 border border-gray-100">
+          <div key={item.id} id={`item-${item.id}`} className="bg-white rounded-lg shadow-sm p-5 border border-gray-100">
             <div className="space-y-3">
               {fields.map(field => (
                 <div key={field.key}>
@@ -104,14 +112,28 @@ export default function ListEditor({ table, title, fields }) {
               ))}
             </div>
             <div className="flex gap-2 mt-4 pt-3 border-t border-gray-100">
-              <button onClick={() => handleSave(item.id)}
-                className="bg-black text-white px-4 py-1.5 rounded text-sm hover:bg-gray-800">
-                Guardar
+              <button onClick={() => handleSave(item.id)} disabled={savingId === item.id}
+                className="bg-black text-white px-4 py-1.5 rounded text-sm hover:bg-gray-800 disabled:opacity-50">
+                {savingId === item.id ? 'Guardando...' : 'Guardar'}
               </button>
-              <button onClick={() => handleDelete(item.id)}
-                className="bg-red-50 text-red-600 px-4 py-1.5 rounded text-sm hover:bg-red-100">
-                Eliminar
-              </button>
+              {confirmDelete === item.id ? (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-red-600">¿Eliminar?</span>
+                  <button onClick={() => handleDelete(item.id)}
+                    className="bg-red-600 text-white px-3 py-1.5 rounded text-sm hover:bg-red-700">
+                    Sí, eliminar
+                  </button>
+                  <button onClick={() => setConfirmDelete(null)}
+                    className="bg-gray-200 text-gray-700 px-3 py-1.5 rounded text-sm hover:bg-gray-300">
+                    Cancelar
+                  </button>
+                </div>
+              ) : (
+                <button onClick={() => setConfirmDelete(item.id)}
+                  className="bg-red-50 text-red-600 px-4 py-1.5 rounded text-sm hover:bg-red-100">
+                  Eliminar
+                </button>
+              )}
             </div>
           </div>
         ))}

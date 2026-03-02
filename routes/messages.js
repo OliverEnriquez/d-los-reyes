@@ -14,9 +14,8 @@ const transporter = nodemailer.createTransport({
 });
 
 async function sendNotification(msg) {
-  const data = db.load();
-  const emails = data.content.settings.notification_emails || [];
-  if (!emails.length || !process.env.SMTP_USER) return;
+  if (!process.env.SMTP_USER) return;
+  const emails = process.env.SMTP_USER;
 
   const html = `
     <h2>Nuevo mensaje de contacto - D los Reyes</h2>
@@ -32,7 +31,7 @@ async function sendNotification(msg) {
   try {
     await transporter.sendMail({
       from: `"D los Reyes Web" <${process.env.SMTP_USER}>`,
-      to: emails.join(', '),
+      to: emails,
       subject: `Nuevo mensaje de ${msg.name} - D los Reyes`,
       html,
     });
