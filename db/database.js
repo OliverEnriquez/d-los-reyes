@@ -20,7 +20,7 @@ function getDefaultData() {
       about: {
         section_label: 'Sobre nosotros',
         headline: 'La madera cobra vida en nuestras manos',
-        paragraph1: 'En <strong class="text-black">D los Reyes</strong> fusionamos la tradición artesanal con el diseño contemporáneo. Cada mueble que creamos es una pieza única, diseñada para adaptarse perfectamente a tu espacio y estilo de vida.',
+        paragraph1: 'En <strong class="text-black">D\' Los Reyes</strong> fusionamos la tradición artesanal con el diseño contemporáneo. Cada mueble que creamos es una pieza única, diseñada para adaptarse perfectamente a tu espacio y estilo de vida.',
         paragraph2: 'Trabajamos con maderas selectas y materiales de primera calidad, aplicando técnicas que combinan lo mejor de la carpintería clásica con la precisión moderna. Nuestro equipo de diseñadores y maestros carpinteros garantiza un resultado excepcional.',
         benefits: [
           { icon: 'check', label: 'Calidad Premium' },
@@ -52,11 +52,11 @@ function getDefaultData() {
         social_facebook: '#',
         social_instagram: '#',
         social_tiktok: '#',
-        copyright: '2026 D los Reyes Carpintería & Diseño. Todos los derechos reservados.',
+        copyright: '2026 D\' Los Reyes Carpintería & Diseño. Todos los derechos reservados.',
         tagline: 'Diseñado con pasión por la madera'
       },
       settings: {
-        logo_text: 'D los Reyes',
+        logo_text: 'D\' Los Reyes',
         logo_image: '',
         notification_emails: ['ariany.enri@gmail.com', 'odec12@gmail.com'],
         show_stats: true,
@@ -103,8 +103,8 @@ function getDefaultData() {
       { id: 4, sort_order: 3, step_number: '04', title: 'Instalación', description: 'Entregamos e instalamos tu mueble, asegurándonos de tu total satisfacción.' }
     ],
     testimonials: [
-      { id: 1, sort_order: 0, quote: 'Nuestra cocina integral quedó espectacular. El equipo de D los Reyes entendió exactamente lo que buscábamos y el resultado superó nuestras expectativas.', author: 'María González', context: 'Proyecto residencial', rating: 5 },
-      { id: 2, sort_order: 1, quote: 'Amueblamos todo nuestro restaurante con D los Reyes. La calidad de los acabados y la atención al detalle son incomparables. Totalmente recomendados.', author: 'Carlos Mendoza', context: 'Restaurante Raíces', rating: 5 },
+      { id: 1, sort_order: 0, quote: 'Nuestra cocina integral quedó espectacular. El equipo de D\' Los Reyes entendió exactamente lo que buscábamos y el resultado superó nuestras expectativas.', author: 'María González', context: 'Proyecto residencial', rating: 5 },
+      { id: 2, sort_order: 1, quote: 'Amueblamos todo nuestro restaurante con D\' Los Reyes. La calidad de los acabados y la atención al detalle son incomparables. Totalmente recomendados.', author: 'Carlos Mendoza', context: 'Restaurante Raíces', rating: 5 },
       { id: 3, sort_order: 2, quote: 'El escritorio y librero que diseñaron para mi oficina son perfectos. Funcionales, elegantes y hechos con una calidad increíble. Arte puro.', author: 'Ana Lucía Torres', context: 'Home office', rating: 5 }
     ],
     messages: [],

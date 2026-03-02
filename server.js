@@ -47,6 +47,6 @@ app.get('/', (req, res) => {
 regenerate();
 
 app.listen(PORT, () => {
-  console.log(`D los Reyes CMS running at http://localhost:${PORT}`);
+  console.log(`D' Los Reyes CMS running at http://localhost:${PORT}`);
   console.log(`Admin panel: http://localhost:${PORT}/admin`);
 });

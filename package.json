@@ -1,7 +1,7 @@
 {
   "name": "dreyes-cms",
   "version": "1.0.0",
-  "description": "CMS para D los Reyes - Carpintería & Diseño",
+  "description": "CMS para D' Los Reyes - Carpintería & Diseño",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

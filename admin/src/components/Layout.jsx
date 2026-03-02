@@ -50,7 +50,7 @@ export default function Layout() {
       `}>
         <div className="p-4 border-b border-white/10 flex items-center justify-between">
           <div>
-            <h2 className="font-bold text-lg">D los Reyes</h2>
+            <h2 className="font-bold text-lg">D' Los Reyes</h2>
             <p className="text-xs text-white/50">CMS Admin</p>
           </div>
           <button

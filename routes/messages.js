@@ -18,7 +18,7 @@ async function sendNotification(msg) {
   const emails = process.env.SMTP_USER;
 
   const html = `
-    <h2>Nuevo mensaje de contacto - D los Reyes</h2>
+    <h2>Nuevo mensaje de contacto - D' Los Reyes</h2>
     <table style="border-collapse:collapse;width:100%;max-width:500px;">
       <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Nombre</td><td style="padding:8px;border-bottom:1px solid #eee;">${msg.name}</td></tr>
       <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;">Email</td><td style="padding:8px;border-bottom:1px solid #eee;">${msg.email}</td></tr>
@@ -30,9 +30,9 @@ async function sendNotification(msg) {
 
   try {
     await transporter.sendMail({
-      from: `"D los Reyes Web" <${process.env.SMTP_USER}>`,
+      from: `"D' Los Reyes Web" <${process.env.SMTP_USER}>`,
       to: emails,
-      subject: `Nuevo mensaje de ${msg.name} - D los Reyes`,
+      subject: `Nuevo mensaje de ${msg.name} - D' Los Reyes`,
       html,
     });
   } catch (err) {

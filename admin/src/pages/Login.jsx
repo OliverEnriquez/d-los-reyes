@@ -26,7 +26,7 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
       <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
-        <h1 className="text-2xl font-bold text-center mb-2">D los Reyes</h1>
+        <h1 className="text-2xl font-bold text-center mb-2">D' Los Reyes</h1>
         <p className="text-gray-500 text-center mb-8 text-sm">Panel de Administración</p>
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded px-4 py-3 mb-4 text-center">
