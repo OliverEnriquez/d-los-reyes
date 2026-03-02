@@ -26,7 +26,8 @@ router.put('/:section', auth, (req, res) => {
   const { section } = req.params;
   if (!VALID_SECTIONS.includes(section)) return res.status(400).json({ error: 'Sección inválida' });
   const data = db.load();
-  data.content[section] = cleanNbsp(req.body);
+  const existing = data.content[section] || {};
+  data.content[section] = { ...existing, ...cleanNbsp(req.body) };
   db.save(data);
   regenerate();
   res.json({ section, data: data.content[section] });
