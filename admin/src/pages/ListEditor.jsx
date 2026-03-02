@@ -137,7 +137,7 @@ export default function ListEditor({ table, title, fields }) {
                 <div key={field.key}>
                   <label className="block text-xs font-medium text-gray-500 mb-1">{field.label}</label>
                   {field.type === 'textarea' ? (
-                    <RichEditor value={item[field.key] || ''} onChange={val => handleUpdate(item.id, field.key, val)} />
+                    <RichEditor key={table + '-' + item.id + '-' + field.key} value={item[field.key] || ''} onChange={val => handleUpdate(item.id, field.key, val)} />
                   ) : field.type === 'image' ? (
                     <ImageUploader value={item[field.key]}
                       onChange={val => handleUpdate(item.id, field.key, val)} />
