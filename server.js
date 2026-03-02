@@ -50,6 +50,29 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// Diagnostic endpoint
+app.get('/api/debug/regenerate', (req, res) => {
+  try {
+    regenerate();
+    const fs = require('fs');
+    const htmlPath = path.join(__dirname, 'public', 'index.html');
+    const exists = fs.existsSync(htmlPath);
+    const stat = exists ? fs.statSync(htmlPath) : null;
+    const dataPath = path.join(__dirname, 'db', 'data.json');
+    const dataExists = fs.existsSync(dataPath);
+    res.json({
+      ok: true,
+      html_exists: exists,
+      html_modified: stat ? stat.mtime : null,
+      data_exists: dataExists,
+      cwd: process.cwd(),
+      dirname: __dirname
+    });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message, stack: err.stack });
+  }
+});
+
 // Generate site on first start
 regenerate();
 
