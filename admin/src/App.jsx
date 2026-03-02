@@ -58,9 +58,9 @@ export default function App() {
           ]} />} />
           <Route path="footer" element={<SectionEditor section="footer" title="Footer" fields={[
             { key: 'description', label: 'Descripción', type: 'textarea' },
-            { key: 'social_facebook', label: 'Facebook URL', type: 'text' },
-            { key: 'social_instagram', label: 'Instagram URL', type: 'text' },
-            { key: 'social_tiktok', label: 'TikTok URL', type: 'text' },
+            { key: 'social_facebook', label: 'Facebook URL', type: 'text', placeholder: 'https://www.facebook.com/tu-pagina' },
+            { key: 'social_instagram', label: 'Instagram URL', type: 'text', placeholder: 'https://www.instagram.com/tu-cuenta' },
+            { key: 'social_tiktok', label: 'TikTok URL', type: 'text', placeholder: 'https://www.tiktok.com/@tu-cuenta' },
             { key: 'copyright', label: 'Copyright', type: 'text' },
             { key: 'tagline', label: 'Tagline', type: 'text' },
           ]} />} />

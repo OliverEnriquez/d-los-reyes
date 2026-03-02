@@ -43,7 +43,7 @@ export default function SectionEditor({ section, title, fields }) {
             ) : field.type === 'image' ? (
               <ImageUploader value={data[field.key]} onChange={val => setData({ ...data, [field.key]: val })} />
             ) : (
-              <input type="text" value={data[field.key] || ''}
+              <input type="text" value={data[field.key] || ''} placeholder={field.placeholder || ''}
                 onChange={e => setData({ ...data, [field.key]: e.target.value })}
                 className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black" />
             )}
