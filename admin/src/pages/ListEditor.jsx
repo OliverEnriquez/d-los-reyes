@@ -19,7 +19,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
-function SortableItem({ item, index, total, fields, table, handleUpdate, handleSave, handleDelete, savingId, confirmDelete, setConfirmDelete }) {
+function SortableItem({ item, index, total, fields, table, handleUpdate, handleSave, handleDelete, savingId, confirmDelete, setConfirmDelete, isFieldEmpty, isItemComplete }) {
   const {
     attributes,
     listeners,
@@ -52,12 +52,14 @@ function SortableItem({ item, index, total, fields, table, handleUpdate, handleS
       <div className="space-y-3">
         {fields.map(field => (
           <div key={field.key}>
-            <label className="block text-xs font-medium text-gray-500 mb-1">{field.label}</label>
+            <label className={`block text-xs font-medium mb-1 ${isFieldEmpty(item[field.key], field.type) ? 'text-red-500' : 'text-gray-500'}`}>{field.label}{isFieldEmpty(item[field.key], field.type) && ' *'}</label>
             {field.type === 'textarea' ? (
               <RichEditor key={table + '-' + item.id + '-' + field.key} value={item[field.key] || ''} onChange={val => handleUpdate(item.id, field.key, val)} />
             ) : field.type === 'image' ? (
-              <ImageUploader value={item[field.key]}
-                onChange={val => handleUpdate(item.id, field.key, val)} />
+              <div className={isFieldEmpty(item[field.key], field.type) ? 'ring-2 ring-red-300 rounded' : ''}>
+                <ImageUploader value={item[field.key]}
+                  onChange={val => handleUpdate(item.id, field.key, val)} />
+              </div>
             ) : field.type === 'select' ? (
               <select value={item[field.key] || ''}
                 onChange={e => handleUpdate(item.id, field.key, e.target.value)}
@@ -73,14 +75,14 @@ function SortableItem({ item, index, total, fields, table, handleUpdate, handleS
             ) : (
               <input type="text" value={item[field.key] || ''} placeholder={field.placeholder || ''}
                 onChange={e => handleUpdate(item.id, field.key, e.target.value)}
-                className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black" />
+                className={`w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black ${isFieldEmpty(item[field.key], field.type) ? 'border-red-300' : 'border-gray-300'}`} />
             )}
           </div>
         ))}
       </div>
       <div className="flex flex-wrap gap-2 mt-4 pt-3 border-t border-gray-100">
-        <button onClick={() => handleSave(item.id)} disabled={savingId === item.id}
-          className="bg-black text-white px-4 py-1.5 rounded text-sm hover:bg-gray-800 disabled:opacity-50">
+        <button onClick={() => handleSave(item.id)} disabled={savingId === item.id || !isItemComplete(item)}
+          className="bg-black text-white px-4 py-1.5 rounded text-sm hover:bg-gray-800 disabled:opacity-30 disabled:cursor-not-allowed">
           {savingId === item.id ? 'Guardando...' : 'Guardar'}
         </button>
         {confirmDelete === item.id ? (
@@ -161,13 +163,19 @@ export default function ListEditor({ table, title, fields, headerSection, header
     setItems(prev => prev.map(i => i.id === id ? { ...i, [key]: value } : i));
   };
 
+  const isFieldEmpty = (val, type) => {
+    if (type === 'number') return val === undefined || val === null;
+    if (type === 'select') return false;
+    if (!val) return true;
+    if (type === 'textarea') {
+      const text = val.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
+      return text === '';
+    }
+    return !val.trim || val.trim() === '';
+  };
+
   const isItemComplete = (item) => {
-    return fields.every(f => {
-      const val = item[f.key];
-      if (f.type === 'number') return val !== undefined && val !== null;
-      if (f.type === 'select') return true;
-      return val && val.trim && val.trim() !== '';
-    });
+    return fields.every(f => !isFieldEmpty(item[f.key], f.type));
   };
 
   const handleSave = async (id) => {
@@ -275,6 +283,8 @@ export default function ListEditor({ table, title, fields, headerSection, header
                 savingId={savingId}
                 confirmDelete={confirmDelete}
                 setConfirmDelete={setConfirmDelete}
+                isFieldEmpty={isFieldEmpty}
+                isItemComplete={isItemComplete}
               />
             ))}
             {items.length === 0 && (
