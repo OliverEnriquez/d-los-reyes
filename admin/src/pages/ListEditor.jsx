@@ -9,7 +9,6 @@ export default function ListEditor({ table, title, fields }) {
   const [loading, setLoading] = useState(true);
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [savingId, setSavingId] = useState(null);
-  const [savingAll, setSavingAll] = useState(false);
   const itemsRef = useRef(items);
 
   useEffect(() => { itemsRef.current = items; }, [items]);
@@ -46,9 +45,22 @@ export default function ListEditor({ table, title, fields }) {
     setItems(prev => prev.map(i => i.id === id ? { ...i, [key]: value } : i));
   };
 
+  const isItemComplete = (item) => {
+    return fields.every(f => {
+      const val = item[f.key];
+      if (f.type === 'number') return val !== undefined && val !== null;
+      if (f.type === 'select') return true;
+      return val && val.trim && val.trim() !== '';
+    });
+  };
+
   const handleSave = async (id) => {
     const item = itemsRef.current.find(i => i.id === id);
     if (!item) return;
+    if (!isItemComplete(item)) {
+      toast.error('Completa todos los campos antes de guardar');
+      return;
+    }
     setSavingId(id);
     try {
       await api.put(`/${table}/${id}`, item);
@@ -57,20 +69,6 @@ export default function ListEditor({ table, title, fields }) {
       toast.error('Error al guardar');
     }
     setSavingId(null);
-  };
-
-  const handleSaveAll = async () => {
-    setSavingAll(true);
-    try {
-      const current = itemsRef.current;
-      for (const item of current) {
-        await api.put(`/${table}/${item.id}`, item);
-      }
-      toast.success('Todo guardado. Sitio actualizado.');
-    } catch {
-      toast.error('Error al guardar');
-    }
-    setSavingAll(false);
   };
 
   const handleDelete = async (id) => {
@@ -84,16 +82,33 @@ export default function ListEditor({ table, title, fields }) {
     }
   };
 
+  const handleMove = async (index, direction) => {
+    const newIndex = index + direction;
+    if (newIndex < 0 || newIndex >= items.length) return;
+    const newItems = [...items];
+    const temp = newItems[index];
+    newItems[index] = newItems[newIndex];
+    newItems[newIndex] = temp;
+    // Update sort_order
+    const updated = newItems.map((item, i) => ({ ...item, sort_order: i }));
+    setItems(updated);
+    // Save order to backend
+    try {
+      for (const item of updated) {
+        await api.put(`/${table}/${item.id}`, item);
+      }
+      toast.success('Orden actualizado');
+    } catch {
+      toast.error('Error al reordenar');
+    }
+  };
+
   if (loading) return <div className="text-gray-500">Cargando...</div>;
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">{title}</h1>
-        <button onClick={handleSaveAll} disabled={savingAll || items.length === 0}
-          className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800 disabled:opacity-50">
-          {savingAll ? 'Guardando todo...' : 'Guardar Todo'}
-        </button>
       </div>
       <button onClick={handleAdd}
         className="fixed bottom-6 right-6 z-40 bg-black text-white px-5 py-3 rounded-full shadow-lg hover:bg-gray-800 transition flex items-center gap-2 text-sm font-medium">
@@ -101,8 +116,22 @@ export default function ListEditor({ table, title, fields }) {
         Agregar
       </button>
       <div className="space-y-4">
-        {items.map(item => (
+        {items.map((item, index) => (
           <div key={item.id} id={`item-${item.id}`} className="bg-white rounded-lg shadow-sm p-5 border border-gray-100">
+            {/* Reorder buttons */}
+            <div className="flex items-center justify-between mb-3 pb-3 border-b border-gray-100">
+              <span className="text-xs text-gray-400 font-medium">#{index + 1} de {items.length}</span>
+              <div className="flex gap-1">
+                <button onClick={() => handleMove(index, -1)} disabled={index === 0}
+                  className="w-8 h-8 flex items-center justify-center rounded border border-gray-200 text-gray-500 hover:bg-gray-100 disabled:opacity-30 disabled:hover:bg-transparent transition">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" /></svg>
+                </button>
+                <button onClick={() => handleMove(index, 1)} disabled={index === items.length - 1}
+                  className="w-8 h-8 flex items-center justify-center rounded border border-gray-200 text-gray-500 hover:bg-gray-100 disabled:opacity-30 disabled:hover:bg-transparent transition">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                </button>
+              </div>
+            </div>
             <div className="space-y-3">
               {fields.map(field => (
                 <div key={field.key}>
