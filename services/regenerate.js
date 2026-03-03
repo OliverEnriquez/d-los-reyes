@@ -30,11 +30,11 @@ function regenerate() {
       gallery_header: data.content.gallery_header || { section_label: 'Nuestro trabajo', headline: 'Galería de Proyectos' },
       process_header: data.content.process_header || { section_label: 'Cómo trabajamos', headline: 'Nuestro Proceso' },
       testimonials_header: data.content.testimonials_header || { section_label: 'Testimonios', headline: 'Lo que dicen nuestros clientes' },
-      stats: (data.stats || []).sort((a, b) => a.sort_order - b.sort_order),
-      services: (data.services || []).sort((a, b) => a.sort_order - b.sort_order),
-      gallery: (data.gallery || []).sort((a, b) => a.sort_order - b.sort_order),
-      process_steps: (data.process_steps || []).sort((a, b) => a.sort_order - b.sort_order),
-      testimonials: (data.testimonials || []).sort((a, b) => a.sort_order - b.sort_order)
+      stats: (data.stats || []).filter(i => i.number && i.label).sort((a, b) => a.sort_order - b.sort_order),
+      services: (data.services || []).filter(i => i.title && i.description).sort((a, b) => a.sort_order - b.sort_order),
+      gallery: (data.gallery || []).filter(i => i.image && i.title).sort((a, b) => a.sort_order - b.sort_order),
+      process_steps: (data.process_steps || []).filter(i => i.title && i.description).sort((a, b) => a.sort_order - b.sort_order),
+      testimonials: (data.testimonials || []).filter(i => i.quote && i.author).sort((a, b) => a.sort_order - b.sort_order)
     }, (err, html) => {
       if (err) {
         console.error('[REGENERATE ERROR]', err.message);
