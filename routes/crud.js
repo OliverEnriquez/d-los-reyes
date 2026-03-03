@@ -18,7 +18,6 @@ function createCrudRouter(tableName, fields) {
     data[tableName] = data[tableName] || [];
     data[tableName].push(item);
     db.save(data);
-    regenerate();
     res.status(201).json(item);
   });
 
